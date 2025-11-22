@@ -1,4 +1,4 @@
-export type OrderType = 'market' | 'limit' | 'sniper';
+export type OrderType = 'market';
 export type OrderStatus = 'pending' | 'routing' | 'building' | 'submitted' | 'confirmed' | 'failed';
 export type DexType = 'raydium' | 'meteora';
 
@@ -22,13 +22,6 @@ export interface DexQuote {
   price: number;
   fee: number;
   estimatedOutput: number;
-}
-
-export interface ExecuteOrderRequest {
-  orderType: OrderType;
-  tokenIn: string;
-  tokenOut: string;
-  amountIn: number;
 }
 
 export interface OrderStatusUpdate {

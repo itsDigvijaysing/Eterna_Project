@@ -52,19 +52,6 @@ export async function updateOrder(orderId: string, updates: any) {
   await redis.hSet(`order:${orderId}`, data);
 }
 
-export async function getOrder(orderId: string) {
-  return await redis.hGetAll(`order:${orderId}`);
-}
-
 export async function cacheOrder(orderId: string, order: any) {
   await redis.set(`cache:${orderId}`, JSON.stringify(order), { EX: 3600 });
-}
-
-export async function getCachedOrder(orderId: string) {
-  const data = await redis.get(`cache:${orderId}`);
-  return data ? JSON.parse(data) : null;
-}
-
-export async function deleteCachedOrder(orderId: string) {
-  await redis.del(`cache:${orderId}`);
 }

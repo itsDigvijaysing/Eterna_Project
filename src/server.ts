@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import websocket from '@fastify/websocket';
 import staticFiles from '@fastify/static';
 import path from 'path';
-import { ExecuteOrderRequest, Order, OrderStatusUpdate } from './types';
+import { Order } from './types';
 import { saveOrder, cacheOrder, redisSub } from './redis';
 import { orderQueue } from './queue';
 
@@ -15,11 +15,7 @@ fastify.register(staticFiles, {
 
 fastify.register(websocket);
 
-const activeConnections = new Map<string, any>();
-
-export async function initializeRedisSubscriber() {
-  // Redis subscriber ready for per-channel subscriptions
-}
+export async function initializeRedisSubscriber() {}
 
 fastify.register(async function (fastify) {
   fastify.get('/api/orders/execute', { websocket: true }, (connection, req) => {
@@ -52,8 +48,6 @@ fastify.register(async function (fastify) {
         await cacheOrder(orderId, order);
 
         socket.send(JSON.stringify({ orderId, status: 'pending' }));
-
-        activeConnections.set(orderId, socket);
         
         await redisSub.subscribe(`order:${orderId}`, (message) => {
           try {
@@ -66,7 +60,6 @@ fastify.register(async function (fastify) {
         await orderQueue.add('execute-order', { order });
 
         socket.on('close', () => {
-          activeConnections.delete(orderId);
           redisSub.unsubscribe(`order:${orderId}`);
         });
 
