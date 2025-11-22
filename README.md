@@ -2,6 +2,8 @@
 
 A fast order execution system for Solana DEX trading with automatic routing between Raydium and Meteora.
 
+![Home Page](Home%20Page.jpeg)
+
 ## What It Does
 
 - Takes market orders and finds the best price
