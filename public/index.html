@@ -326,6 +326,7 @@
   </div>
 
   <script>
+    const RENDER_API_URL = 'https://eterna-project.onrender.com';
     const ordersMap = new Map();
     let logCounter = 0;
 
@@ -414,9 +415,8 @@
         };
 
         try {
-          const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-          const host = window.location.host;
-          const ws = new WebSocket(`${protocol}//${host}/api/orders/execute`);
+          const wsUrl = RENDER_API_URL.replace('https://', 'wss://').replace('http://', 'ws://');
+          const ws = new WebSocket(`${wsUrl}/api/orders/execute`);
 
           ws.onopen = () => {
             ws.send(JSON.stringify(orderData));
