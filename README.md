@@ -21,7 +21,8 @@ npm run dev
 
 Open http://localhost:3000 in your browser.
 
-**Live Demo**: https://eternalabs.netlify.app/
+**Live Demo**: https://YOUR-RENDER-URL.onrender.com
+*(Replace with your actual Render URL)*
 
 ## How It Works
 
