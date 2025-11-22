@@ -1,0 +1,322 @@
+{
+  "info": {
+    "name": "Order Execution Engine API",
+    "description": "Test suite for DEX order execution with Raydium and Meteora routing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has status ok\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.status).to.eql(\"ok\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["health"]
+        },
+        "description": "Verify server health and availability"
+      },
+      "response": []
+    },
+    {
+      "name": "Execute Order - SOL to USDC",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Connection",
+            "value": "Upgrade"
+          },
+          {
+            "key": "Upgrade",
+            "value": "websocket"
+          }
+        ],
+        "url": {
+          "raw": "ws://localhost:3000/api/orders/execute",
+          "protocol": "ws",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "orders", "execute"]
+        },
+        "description": "Execute market order: 100 SOL → USDC\\n\\nExpected flow:\\n1. pending\\n2. routing (compare DEXes)\\n3. building (best DEX selected)\\n4. submitted\\n5. confirmed (with TX hash and price)"
+      },
+      "response": []
+    },
+    {
+      "name": "Execute Order - USDC to SOL",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Connection",
+            "value": "Upgrade"
+          },
+          {
+            "key": "Upgrade",
+            "value": "websocket"
+          }
+        ],
+        "url": {
+          "raw": "ws://localhost:3000/api/orders/execute",
+          "protocol": "ws",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "orders", "execute"]
+        },
+        "description": "Execute reverse swap: 500 USDC → SOL\\n\\nTests opposite direction trading"
+      },
+      "response": []
+    },
+    {
+      "name": "Execute Order - SOL to USDT",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Connection",
+            "value": "Upgrade"
+          },
+          {
+            "key": "Upgrade",
+            "value": "websocket"
+          }
+        ],
+        "url": {
+          "raw": "ws://localhost:3000/api/orders/execute",
+          "protocol": "ws",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "orders", "execute"]
+        },
+        "description": "Execute order: 250 SOL → USDT\\n\\nTests alternative stablecoin pair"
+      },
+      "response": []
+    },
+    {
+      "name": "Execute Order - Large Amount",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Connection",
+            "value": "Upgrade"
+          },
+          {
+            "key": "Upgrade",
+            "value": "websocket"
+          }
+        ],
+        "url": {
+          "raw": "ws://localhost:3000/api/orders/execute",
+          "protocol": "ws",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "orders", "execute"]
+        },
+        "description": "Execute large order: 1000 SOL → USDC\\n\\nTests system with high-value transaction"
+      },
+      "response": []
+    },
+    {
+      "name": "Execute Order - Small Amount",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Connection",
+            "value": "Upgrade"
+          },
+          {
+            "key": "Upgrade",
+            "value": "websocket"
+          }
+        ],
+        "url": {
+          "raw": "ws://localhost:3000/api/orders/execute",
+          "protocol": "ws",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "orders", "execute"]
+        },
+        "description": "Execute small order: 10 SOL → USDC\\n\\nTests system with minimal transaction"
+      },
+      "response": []
+    },
+    {
+      "name": "Invalid Request - Missing Token Out",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Should return error for missing tokenOut\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.exist;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Connection",
+            "value": "Upgrade"
+          },
+          {
+            "key": "Upgrade",
+            "value": "websocket"
+          }
+        ],
+        "url": {
+          "raw": "ws://localhost:3000/api/orders/execute",
+          "protocol": "ws",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "orders", "execute"]
+        },
+        "description": "Test validation: missing required field tokenOut\\n\\nExpected: Error response"
+      },
+      "response": []
+    },
+    {
+      "name": "Invalid Request - Missing Amount",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Should return error for missing amount\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.exist;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Connection",
+            "value": "Upgrade"
+          },
+          {
+            "key": "Upgrade",
+            "value": "websocket"
+          }
+        ],
+        "url": {
+          "raw": "ws://localhost:3000/api/orders/execute",
+          "protocol": "ws",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "orders", "execute"]
+        },
+        "description": "Test validation: missing amountIn field\\n\\nExpected: Error response"
+      },
+      "response": []
+    },
+    {
+      "name": "Invalid Request - Same Token Pair",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Should return error for same token pair\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.exist;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Connection",
+            "value": "Upgrade"
+          },
+          {
+            "key": "Upgrade",
+            "value": "websocket"
+          }
+        ],
+        "url": {
+          "raw": "ws://localhost:3000/api/orders/execute",
+          "protocol": "ws",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "orders", "execute"]
+        },
+        "description": "Test validation: tokenIn and tokenOut cannot be same\\n\\nExpected: Error response"
+      },
+      "response": []
+    },
+    {
+      "name": "Concurrent Orders - 5 Simultaneous",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Connection",
+            "value": "Upgrade"
+          },
+          {
+            "key": "Upgrade",
+            "value": "websocket"
+          }
+        ],
+        "url": {
+          "raw": "ws://localhost:3000/api/orders/execute",
+          "protocol": "ws",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "orders", "execute"]
+        },
+        "description": "Test concurrent processing with 5 simultaneous orders\\n\\nRun this test 5 times quickly to simulate concurrent load\\n\\nExpected: All orders processed in parallel\\nTime: ~5 seconds total\\n\\nVerifies:\\n- 10 worker concurrency\\n- Queue management\\n- DEX routing decisions\\n- No race conditions"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "wsUrl",
+      "value": "ws://localhost:3000",
+      "type": "string"
+    }
+  ]
+}

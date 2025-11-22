@@ -69,8 +69,5 @@ public/
 
 ## Environment
 
-Redis cloud is pre-configured in `.env`. No additional setup needed.
-
+Redis cloud is pre-configured in `.env`. 
 ---
-
-Built with ⚡ for high-speed DEX order execution
